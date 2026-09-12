@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isMember(householdId) { return signedIn() && exists(/databases/$(database)/documents/households/$(householdId)/members/$(request.auth.uid)); }
+    function isAdmin(householdId) { return isMember(householdId) && get(/databases/$(database)/documents/households/$(householdId)/members/$(request.auth.uid)).data.role == 'admin'; }
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || resource.data.householdId == null);
+      allow create: if signedIn() && request.auth.uid == userId;
+      allow update: if signedIn() && (request.auth.uid == userId || (resource.data.householdId == null && isAdmin(request.resource.data.householdId)) || (request.resource.data.householdId == null && resource.data.householdId != null && isAdmin(resource.data.householdId)));
+    }
+    match /usernames/{username} { allow read: if signedIn(); allow create: if signedIn() && request.resource.data.uid == request.auth.uid; }
+    match /householdCodes/{code} { allow read: if signedIn(); allow create: if signedIn() && request.resource.data.adminId == request.auth.uid; }
+    match /households/{householdId} { allow create: if signedIn() && request.resource.data.adminId == request.auth.uid; allow read: if signedIn(); }
+    match /households/{householdId}/members/{memberId} { allow read: if isMember(householdId); allow create: if isAdmin(householdId) || (signedIn() && request.auth.uid == memberId && !exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId))); allow update, delete: if isAdmin(householdId); }
+    match /households/{householdId}/expenses/{expenseId} {
+      allow read: if isMember(householdId);
+      allow create: if isMember(householdId) && request.resource.data.paidBy == request.auth.uid;
+      allow update, delete: if isMember(householdId) && (resource.data.paidBy == request.auth.uid || isAdmin(householdId));
+    }
+  }
+}

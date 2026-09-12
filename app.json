@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "FairShare",
+    "slug": "fairshare",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "android": { "package": "com.roommateexpenses.app" },
+    "ios": { "bundleIdentifier": "com.roommateexpenses.app" }
+  }
+}
