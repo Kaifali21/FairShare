@@ -56,6 +56,9 @@ yarn-error.log
 
 # Bundle artifact
 *.jsbundle
+dist/
+expo-export.log
+.expo/
 
 # Ruby / CocoaPods
 **/Pods/
