@@ -6,7 +6,16 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "icon": "./assets/icon.png",
-    "android": { "package": "com.roommateexpenses.app" },
-    "ios": { "bundleIdentifier": "com.roommateexpenses.app" }
+    "android": {
+      "package": "com.roommateexpenses.app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.roommateexpenses.app"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1757d748-bdf0-43d5-bfb3-a4fe2d37e2ab"
+      }
+    }
   }
 }
